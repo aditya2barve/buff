@@ -19,6 +19,8 @@
     <select id="eventName" onchange="toggleTextFields()">
         <option value="asleep">Asleep</option>
         <option value="awake">Awake</option>
+        <option value="eat">Eat</option>
+        <option value="weigh">Weigh</option>
         <option value="suryanamaskar">Suryanamaskar</option>
         <option value="pushup">Pushup</option>
         <option value="bicep curl">Bicep Curl</option>
@@ -77,7 +79,12 @@
         function toggleReps() {
             var eventNameSelect = document.getElementById("eventName");
             var repsInput = document.getElementById("reps");
-            if (eventNameSelect.value === "suryanamaskar" || eventNameSelect.value === "pushup" || eventNameSelect.value === "bicep curl" || eventNameSelect.value === "squat") {
+            if (eventNameSelect.value === "suryanamaskar"
+                || eventNameSelect.value === "pushup"
+                || eventNameSelect.value === "bicep curl"
+                || eventNameSelect.value === "squat"
+                || eventNameSelect.value === "weigh" // reps is weight in kg
+            ) {
                 repsInput.style.display = "block";
                 console.log("Showing the reps field.")
             } else {
