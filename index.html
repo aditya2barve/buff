@@ -15,28 +15,73 @@
 
 <body>
     <h1>buff</h1>
-    <label for="eventName">Activity:</label>
-    <select id="eventName" onchange="toggleTextFields()">
-        <option value="asleep">Asleep</option>
-        <option value="awake">Awake</option>
-        <option value="eat">Eat</option>
-        <option value="weigh">Weigh</option>
-        <option value="suryanamaskar">Suryanamaskar</option>
-        <option value="pushup">Pushup</option>
-        <option value="bicep curl">Bicep Curl</option>
-        <option value="squat">Squat</option>
-        <option value="other">Other</option>
-    </select>
+    <button onclick="trackSleep('awake')">Awake</button>
+    <button onclick="trackSleep('asleep')">Asleep</button>
     <hr>
 
-    <input type="text" id="otherEventName" placeholder="Enter event name" style="display:none;">
-    <input type="number" id="reps" name="reps" placeholder="Reps" style="display:none;">
+    <input type="number" id="weight" placeholder="70.00">
+    <label for="weight">Kg</label>
+    <button onclick="trackWeight()">Weigh</button>
+    <hr>
+
+    <select id="trainingName" onchange="toggleTextFields()">
+        <option value="arnold press">Arnold press</option>
+        <option value="bicep curl">Bicep curl</option>
+        <option value="farmer carry">Farmer carry</option>
+        <option value="goblet squat">Goblet squat</option>
+        <option value="lateral raise">Lateral raise</option>
+        <option value="overhead tricep extension">Overhead tricep extension</option>
+        <option value="push up">Push up</option>
+        <option value="squat">Squat</option>
+        <option value="suryanamaskar">Suryanamaskar</option>
+        <option value="other">Other</option>
+    </select>
+    <input type="text" id="otherTrainingName" placeholder="Enter training name" style="display:none;">
+    <button onclick="trackTraining()">Track</button>
+    <br>
+    <br>
+    <div>
+        <label for="load">Load</label>
+        <select id="load" style="display: inline-block;">
+            <option value="" selected></option>
+            <option value="5">5 lbs</option>
+            <option value="10">10 lbs</option>
+            <option value="15">15 lbs</option>
+            <option value="20">20 lbs</option>
+            <option value="25">25 lbs</option>
+            <option value="30">30 lbs</option>
+        </select>
+        <label for="reps">Reps</label>
+        <select id="reps" style="display: inline-block;">
+            <option value="" selected></option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+        </select>
+        <label for="minutes">Minutes</label>
+        <select id="minutes" style="display: inline-block;">
+            <option value="" selected></option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+        </select>
+    </div>
     <hr>
 
     <input type="text" id="note" name="note" placeholder="Note">
-    <hr>
-
-    <button onclick="trackEvent()">Track Event</button>
     <hr>
 
     <textarea id="eventLog" readonly rows="10"></textarea>
@@ -65,10 +110,10 @@
         });
 
         function toggleOtherEventName() {
-            var eventNameSelect = document.getElementById("eventName");
-            var otherEventNameInput = document.getElementById("otherEventName");
+            var eventNameSelect = document.getElementById("trainingName");
+            var otherEventNameInput = document.getElementById("otherTrainingName");
             if (eventNameSelect.value === "other") {
-                otherEventNameInput.style.display = "block";
+                otherEventNameInput.style.display = "inline-block";
                 console.log("Showing the text field.")
             } else {
                 otherEventNameInput.style.display = "none";
@@ -76,25 +121,8 @@
             }
         }
 
-        function toggleReps() {
-            var eventNameSelect = document.getElementById("eventName");
-            var repsInput = document.getElementById("reps");
-            if (eventNameSelect.value === "suryanamaskar"
-                || eventNameSelect.value === "pushup"
-                || eventNameSelect.value === "bicep curl"
-                || eventNameSelect.value === "squat"
-            ) {
-                repsInput.style.display = "block";
-                console.log("Showing the reps field.")
-            } else {
-                repsInput.style.display = "none";
-                console.log("Hiding the reps field.")
-            }
-        }
-
         function toggleTextFields() {
             toggleOtherEventName();
-            toggleReps();
         }
 
         var eventLog = document.getElementById("eventLog");
@@ -106,24 +134,84 @@
                 events.shift();
             }
             eventLog.value = events.slice().reverse().map(function (event) {
-                var suffix = event.properties.reps ? " - (" + event.properties.reps + " reps)" : "";
-                suffix += event.properties.note ? " - " + event.properties.note : "";
-                return event.properties.localTimestamp + " - " + event.name + suffix;
+                // convert to JSON string
+                // make a copy of event.properties, excluding the localTimestamp
+                properites_without_localTimestamp = Object.assign({}, event.properties);
+                delete properites_without_localTimestamp.localTimestamp;
+
+                // convert properties_without_localTimestamp to a comma-separated string
+                properites_without_localTimestamp_string = Object.keys(properites_without_localTimestamp).map(function (key) {
+                    return key + " = " + properites_without_localTimestamp[key];
+                }).join(", ");
+
+                // var suffix = JSON.stringify(properites_without_localTimestamp);
+                var suffix = properites_without_localTimestamp_string;
+                return event.properties.localTimestamp + " - " + event.name + " (" + suffix + ")";
+                // var suffix = event.properties.reps ? " - (" + event.properties.reps + " reps)" : "";
+                // suffix += event.properties.note ? " - " + event.properties.note : "";
+                // return event.properties.localTimestamp + " - " + event.name + suffix;
             }).join("\n");
         }
 
-        function trackEvent() {
-            var eventName = document.getElementById("eventName").value;
-            if (eventName === "other") {
-                eventName = document.getElementById("otherEventName").value;
+        function trackEvent(event) {
+            note = document.getElementById("note").value;
+            if (note != "") {
+                event.properties.note = note;
             }
 
-            console.log("Emitting event", eventName);
+            console.log("Emitting event", event.name);
+
+            appInsights.trackEvent(event);
+            console.log("Emitted event", event.name);
+
+            updateEventLog(event);
+        }
+
+        function trackSleep(name) {
             event = {
-                name: eventName,
+                name: name,
                 properties: {
                     localTimestamp: new Date().toLocaleString(),
                 },
+            }
+
+            trackEvent(event);
+        }
+
+        function trackWeight() {
+            var weight = document.getElementById("weight").value;
+            if (weight === "") {
+                alert("Please enter your weight.");
+                return;
+            }
+
+            event = {
+                name: "weight",
+                properties: {
+                    localTimestamp: new Date().toLocaleString(),
+                    kg: parseFloat(weight),
+                },
+            }
+
+            trackEvent(event);
+        }
+
+        function trackTraining() {
+            var name = document.getElementById("trainingName").value;
+            if (name === "other") {
+                name = document.getElementById("otherTrainingName").value;
+            }
+
+            event = {
+                name: name,
+                properties: {
+                    localTimestamp: new Date().toLocaleString(),
+                },
+            }
+
+            load = document.getElementById("load").value;
+            if (load != "") {
+                event.properties.lbs = parseInt(load);
             }
 
             reps = document.getElementById("reps").value;
@@ -131,15 +219,12 @@
                 event.properties.reps = parseInt(reps);
             }
 
-            note = document.getElementById("note").value;
-            if (note != "") {
-                event.properties.note = note;
+            minutes = document.getElementById("minutes").value;
+            if (minutes != "") {
+                event.properties.minutes = parseInt(minutes);
             }
 
-            appInsights.trackEvent(event);
-            console.log("Emitted event", eventName);
-
-            updateEventLog(event);
+            trackEvent(event);
         }
 
         console.log('Hello, World!');
