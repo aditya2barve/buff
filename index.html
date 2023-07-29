@@ -109,6 +109,17 @@
             },
         });
 
+        function confirmAction() {
+            const confirmed = confirm("Are you sure you want to proceed?");
+            if (confirmed) {
+                console.log("User confirmed action.");
+                return true;
+            } else {
+                console.log("User cancelled action.");
+                return false;
+            }
+        }
+
         function toggleOtherEventName() {
             var eventNameSelect = document.getElementById("trainingName");
             var otherEventNameInput = document.getElementById("otherTrainingName");
@@ -128,32 +139,26 @@
         var eventLog = document.getElementById("eventLog");
         var events = [];
 
+        function stringifyEvent(event) {
+            const { localTimestamp, ...props } = event.properties;
+            const suffix = Object.keys(props).map(key => key + " = " + props[key]).join(", ");
+            return event.properties.localTimestamp + " - " + event.name + " (" + suffix + ")";
+        }
+
         function updateEventLog(event) {
             events.push(event);
             if (events.length > 10) {
                 events.shift();
             }
-            eventLog.value = events.slice().reverse().map(function (event) {
-                // convert to JSON string
-                // make a copy of event.properties, excluding the localTimestamp
-                properites_without_localTimestamp = Object.assign({}, event.properties);
-                delete properites_without_localTimestamp.localTimestamp;
-
-                // convert properties_without_localTimestamp to a comma-separated string
-                properites_without_localTimestamp_string = Object.keys(properites_without_localTimestamp).map(function (key) {
-                    return key + " = " + properites_without_localTimestamp[key];
-                }).join(", ");
-
-                // var suffix = JSON.stringify(properites_without_localTimestamp);
-                var suffix = properites_without_localTimestamp_string;
-                return event.properties.localTimestamp + " - " + event.name + " (" + suffix + ")";
-                // var suffix = event.properties.reps ? " - (" + event.properties.reps + " reps)" : "";
-                // suffix += event.properties.note ? " - " + event.properties.note : "";
-                // return event.properties.localTimestamp + " - " + event.name + suffix;
-            }).join("\n");
+            eventLog.value = events.slice().reverse().map(stringifyEvent).join("\n");
         }
 
         function trackEvent(event) {
+            if (confirmAction() != true) {
+                console.log("User cancelled action.");
+                return;
+            }
+
             note = document.getElementById("note").value;
             if (note != "") {
                 event.properties.note = note;
