@@ -154,10 +154,11 @@
         }
 
         function trackEvent(event) {
-            if (confirmAction() != true) {
-                console.log("User cancelled action.");
-                return;
-            }
+            // Turn on if there are many misclicks.
+            // if (confirmAction() != true) {
+            //     console.log("User cancelled action.");
+            //     return;
+            // }
 
             note = document.getElementById("note").value;
             if (note != "") {
