@@ -73,6 +73,10 @@
             <option value="10">10</option>
             <option value="11">11</option>
             <option value="12">12</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
+            <option value="40">40</option>
+            <option value="50">50</option>
         </select>
         <label for="minutes">Minutes</label>
         <select id="minutes" style="display: inline-block;">
@@ -154,7 +158,7 @@
 
         function updateEventLog(event) {
             events.push(event);
-            if (events.length > 10) {
+            if (events.length > 1000) {
                 events.shift();
             }
             eventLog.value = events.slice().reverse().map(stringifyEvent).join("\n");
