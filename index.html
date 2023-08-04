@@ -15,6 +15,10 @@
 
 <body>
     <h1>buff</h1>
+    <label for="username">Name:</label>
+    <input type="text" id="username" placeholder="Enter your name">
+    <hr>
+
     <button onclick="trackSleep('awake')">Awake</button>
     <button onclick="trackSleep('asleep')">Asleep</button>
     <hr>
@@ -42,6 +46,34 @@
         <option value="squat">Squat</option>
         <option value="suryanamaskar">Suryanamaskar</option>
         <option value="other">Other</option>
+        <option value="light yoga">light yoga</option>
+        <option value="eye exercise">eye exercise</option>
+        <option value="neck exercise">neck exercise</option>
+        <option value="belly exercise">belly exercise</option>
+        <option value="calf raise">calf raise</option>
+        <option value="knee exercise">knee exercise</option>
+        <option value="lunge">lunge</option>
+        <option value="yoga warmup">yoga warmup</option>
+        <option value="slow breathing">slow breathing</option>
+        <option value="nadishodhan">nadishodhan</option>
+        <option value="kapalbhati">kapalbhati</option>
+        <option value="bhastrika">bhastrika</option>
+        <option value="bhramari">bhramari</option>
+        <option value="hollow hold">hollow hold</option>
+        <option value="plank">plank</option>
+        <option value="mountain climber 3 variations">mountain climber 3 variations</option>
+        <option value="burpee">burpee</option>
+        <option value="viparitkarani">viparitkarani</option>
+        <option value="laughter">laughter</option>
+        <option value="balancing exercise">balancing exercise</option>
+        <option value="meditation">meditation</option>
+        <option value="sudarshankriya">sudarshankriya</option>
+        <option value="padmasadhana">padmasadhana</option>
+        <option value="tapping">tapping</option>
+        <option value="posture correction exercise">posture correction exercise</option>
+        <option value="walk">walk</option>
+        <option value="dance">dance</option>
+        <option value="brain exercise">brain exercise</option>
     </select>
     <input type="text" id="otherTrainingName" placeholder="Enter training name" style="display:none;">
     <button onclick="trackTraining()">Track</button>
@@ -151,7 +183,7 @@
         var events = [];
 
         function stringifyEvent(event) {
-            const { localTimestamp, ...props } = event.properties;
+            const { localTimestamp, username, ...props } = event.properties;
             const suffix = Object.keys(props).map(key => key + " = " + props[key]).join(", ");
             return event.properties.localTimestamp + " - " + event.name + " (" + suffix + ")";
         }
@@ -170,6 +202,14 @@
             //     console.log("User cancelled action.");
             //     return;
             // }
+            if (document.getElementById("username").value === "") {
+                alert("Please enter your name.");
+                return;
+            }
+            else {
+                event.properties.username = document.getElementById("username").value;
+            }
+
 
             note = document.getElementById("note").value;
             if (note != "") {
